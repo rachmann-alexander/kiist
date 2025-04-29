@@ -1,0 +1,678 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="Künstliche Intelligenz ist">Künstliche Intelligenz ist</option>
+                                
+                                    <option value="ein">ein</option>
+                                
+                                    <option value="sich">sich</option>
+                                
+                                    <option value="schnell">schnell</option>
+                                
+                                    <option value="entwickelndes">entwickelndes</option>
+                                
+                                    <option value="Feld">Feld</option>
+                                
+                                    <option value="das">das</option>
+                                
+                                    <option value="Potenzial">Potenzial</option>
+                                
+                                    <option value="hat">hat</option>
+                                
+                                    <option value="viele">viele</option>
+                                
+                                    <option value="Aspekte">Aspekte</option>
+                                
+                                    <option value="unseres">unseres</option>
+                                
+                                    <option value="Lebens">Lebens</option>
+                                
+                                    <option value="zu">zu</option>
+                                
+                                    <option value="verändern">verändern</option>
+                                
+                                    <option value="interdisziplinäres">interdisziplinäres</option>
+                                
+                                    <option value="der">der</option>
+                                
+                                    <option value="Informatik">Informatik</option>
+                                
+                                    <option value="mit">mit</option>
+                                
+                                    <option value="Automatisierung">Automatisierung</option>
+                                
+                                    <option value="intelligenten">intelligenten</option>
+                                
+                                    <option value="Verhaltens">Verhaltens</option>
+                                
+                                    <option value="befasst">befasst</option>
+                                
+                                    <option value="entwickelnder">entwickelnder</option>
+                                
+                                    <option value="Bereich">Bereich</option>
+                                
+                                    <option value="Entwicklung">Entwicklung</option>
+                                
+                                    <option value="intelligenter">intelligenter</option>
+                                
+                                    <option value="Maschinen">Maschinen</option>
+                                
+                                    <option value="beschäftigt">beschäftigt</option>
+                                
+                                    <option value="die">die</option>
+                                
+                                    <option value="Aufgaben">Aufgaben</option>
+                                
+                                    <option value="ausführen">ausführen</option>
+                                
+                                    <option value="können">können</option>
+                                
+                                    <option value="typischerweise">typischerweise</option>
+                                
+                                    <option value="menschliche">menschliche</option>
+                                
+                                    <option value="Intelligenz">Intelligenz</option>
+                                
+                                    <option value="erfordern">erfordern</option>
+                                
+                                    <option value="von">von</option>
+                                
+                                    <option value="Agenten">Agenten</option>
+                                
+                                    <option value="also">also</option>
+                                
+                                    <option value="Systemen">Systemen</option>
+                                
+                                    <option value="ihre">ihre</option>
+                                
+                                    <option value="Umgebung">Umgebung</option>
+                                
+                                    <option value="wahrnehmen">wahrnehmen</option>
+                                
+                                    <option value="und">und</option>
+                                
+                                    <option value="Handlungen">Handlungen</option>
+                                
+                                    <option value="um">um</option>
+                                
+                                    <option value="bestimmte">bestimmte</option>
+                                
+                                    <option value="Ziele">Ziele</option>
+                                
+                                    <option value="erreichen">erreichen</option>
+                                
+                                    <option value="darauf">darauf</option>
+                                
+                                    <option value="abzielt">abzielt</option>
+                                
+                                    <option value="in">in</option>
+                                
+                                    <option value="Lage">Lage</option>
+                                
+                                    <option value="versetzen">versetzen</option>
+                                
+                                    <option value="auszuführen">auszuführen</option>
+                                
+                                    <option value="weites">weites</option>
+                                
+                                    <option value="Aktionen">Aktionen</option>
+                                
+                                    <option value="sind">sind</option>
+                                
+                                    <option value="breites">breites</option>
+                                
+                                    <option value="d">d</option>
+                                
+                                    <option value="h">h</option>
+                                
+                                    <option value="Massnahmen">Massnahmen</option>
+                                
+                                    <option value="ergreifen">ergreifen</option>
+                                
+                                    <option value="Erfolgschancen">Erfolgschancen</option>
+                                
+                                    <option value="maximieren">maximieren</option>
+                                
+                                    <option value="rasch">rasch</option>
+                                
+                                    <option value="Computersysteme">Computersysteme</option>
+                                
+                                    <option value="lösen">lösen</option>
+                                
+                                    <option value="Zweig">Zweig</option>
+                                
+                                    <option value="Maßnahmen">Maßnahmen</option>
+                                
+                                    <option value="Systeme">Systeme</option>
+                                
+                                    <option value="breit">breit</option>
+                                
+                                    <option value="gefächertes">gefächertes</option>
+                                
+                                    <option value="Software">Software</option>
+                                
+                                    <option value="menschenähnliche">menschenähnliche</option>
+                                
+                                    <option value="erfüllen">erfüllen</option>
+                                
+                                    <option value="Computer">Computer</option>
+                                
+                                    <option value="Fähigkeit">Fähigkeit</option>
+                                
+                                    <option value="Computersystemen">Computersystemen</option>
+                                
+                                    <option value="heisst">heisst</option>
+                                
+                                    <option value="Umwelt">Umwelt</option>
+                                
+                                    <option value="entwickeln">entwickeln</option>
+                                
+                                    <option value="multidisziplinäres">multidisziplinäres</option>
+                                
+                                    <option value="Computerprogramme">Computerprogramme</option>
+                                
+                                    <option value="maschinen">maschinen</option>
+                                
+                                    <option value="versucht">versucht</option>
+                                
+                                    <option value="intelligente">intelligente</option>
+                                
+                                    <option value="Verhaltensweisen">Verhaltensweisen</option>
+                                
+                                    <option value="Computern">Computern</option>
+                                
+                                    <option value="nachzubilden">nachzubilden</option>
+                                
+                                    <option value="denken">denken</option>
+                                
+                                    <option value="lernen">lernen</option>
+                                
+                                    <option value="handeln">handeln</option>
+                                
+                                    <option value="wie">wie</option>
+                                
+                                    <option value="Menschen">Menschen</option>
+                                
+                                    <option value="erledigen">erledigen</option>
+                                
+                                    <option value="Theorie">Theorie</option>
+                                
+                                    <option value="normalerweise">normalerweise</option>
+                                
+                                    <option value="Denkprozesse">Denkprozesse</option>
+                                
+                                    <option value="imitieren">imitieren</option>
+                                
+                                    <option value="Gebiet">Gebiet</option>
+                                
+                                    <option value="Probleme">Probleme</option>
+                                
+                                    <option value="vornehmen">vornehmen</option>
+                                
+                                    <option value="bestimmtes">bestimmtes</option>
+                                
+                                    <option value="Ziel">Ziel</option>
+                                
+                                    <option value="kognitive">kognitive</option>
+                                
+                                    <option value="Funktionen">Funktionen</option>
+                                
+                                    <option value="Lernen">Lernen</option>
+                                
+                                    <option value="Problemlösen">Problemlösen</option>
+                                
+                                    <option value="Entscheidungsfindung">Entscheidungsfindung</option>
+                                
+                                    <option value="nachzuahmen">nachzuahmen</option>
+                                
+                                    <option value="Softwaresysteme">Softwaresysteme</option>
+                                
+                                    <option value="für">für</option>
+                                
+                                    <option value="erforderlich">erforderlich</option>
+                                
+                                    <option value="ist">ist</option>
+                                
+                                    <option value="dem">dem</option>
+                                
+                                    <option value="Bau">Bau</option>
+                                
+                                    <option value="weitreichendes">weitreichendes</option>
+                                
+                                    <option value="befähigen">befähigen</option>
+                                
+                                    <option value="argumentieren">argumentieren</option>
+                                
+                                    <option value="vielversprechendes">vielversprechendes</option>
+                                
+                                    <option value="umfasst">umfasst</option>
+                                
+                                    <option value="selbstständig">selbstständig</option>
+                                
+                                    <option value="aus">aus</option>
+                                
+                                    <option value="ihr">ihr</option>
+                                
+                                    <option value="eigenständig">eigenständig</option>
+                                
+                                    <option value="zum">zum</option>
+                                
+                                    <option value="heißt">heißt</option>
+                                
+                                    <option value="so">so</option>
+                                
+                                    <option value="gestalten">gestalten</option>
+                                
+                                    <option value="dass">dass</option>
+                                
+                                    <option value="sie">sie</option>
+                                
+                                    <option value="autonom">autonom</option>
+                                
+                                    <option value="Fähigkeiten">Fähigkeiten</option>
+                                
+                                    <option value="besitzen">besitzen</option>
+                                
+                                    <option value="z">z</option>
+                                
+                                    <option value="B">B</option>
+                                
+                                    <option value="Entscheidungen">Entscheidungen</option>
+                                
+                                    <option value="treffen">treffen</option>
+                                
+                                    <option value="zeigen">zeigen</option>
+                                
+                                    <option value="schaffen">schaffen</option>
+                                
+                                    <option value="auf">auf</option>
+                                
+                                    <option value="konzentriert">konzentriert</option>
+                                
+                                    <option value="Intelligenzfunktionen">Intelligenzfunktionen</option>
+                                
+                                    <option value="Intelligenzleistungen">Intelligenzleistungen</option>
+                                
+                                    <option value="vollbringen">vollbringen</option>
+                                
+                                    <option value="vorgegebene">vorgegebene</option>
+                                
+                                    <option value="oder">oder</option>
+                                
+                                    <option value="nachahmen">nachahmen</option>
+                                
+                                    <option value="Problemlösung">Problemlösung</option>
+                                
+                                    <option value="aufweisen">aufweisen</option>
+                                
+                                    <option value="simulieren">simulieren</option>
+                                
+                                    <option value="demonstrieren">demonstrieren</option>
+                                
+                                    <option value="indem">indem</option>
+                                
+                                    <option value="intelligent">intelligent</option>
+                                
+                                    <option value="machen">machen</option>
+                                
+                                    <option value="sodass">sodass</option>
+                                
+                                    <option value="wahrzunehmen">wahrzunehmen</option>
+                                
+                                    <option value="Teilgebiet">Teilgebiet</option>
+                                
+                                    <option value="erbringen">erbringen</option>
+                                
+                                    <option value="Erstellen">Erstellen</option>
+                                
+                                    <option value="Erschaffen">Erschaffen</option>
+                                
+                                    <option value="menschenähnlichen">menschenähnlichen</option>
+                                
+                                    <option value="kognitiven">kognitiven</option>
+                                
+                                    <option value="auszustatten">auszustatten</option>
+                                
+                                    <option value="programmieren">programmieren</option>
+                                
+                                    <option value="unsere">unsere</option>
+                                
+                                    <option value="Gesellschaft">Gesellschaft</option>
+                                
+                                    <option value="vielfältige">vielfältige</option>
+                                
+                                    <option value="Weise">Weise</option>
+                                
+                                    <option value="transformieren">transformieren</option>
+                                
+                                    <option value="übernehmen">übernehmen</option>
+                                
+                                    <option value="übertreffen">übertreffen</option>
+                                
+                                    <option value="multidisziplinärer">multidisziplinärer</option>
+                                
+                                    <option value="reagieren">reagieren</option>
+                                
+                                    <option value="nachbilden">nachbilden</option>
+                                
+                                    <option value="es">es</option>
+                                
+                                    <option value="ermöglicht">ermöglicht</option>
+                                
+                                    <option value="befähigt">befähigt</option>
+                                
+                                    <option value="vielversprechender">vielversprechender</option>
+                                
+                                    <option value="aber">aber</option>
+                                
+                                    <option value="auch">auch</option>
+                                
+                                    <option value="komplexer">komplexer</option>
+                                
+                                    <option value="daraus">daraus</option>
+                                
+                                    <option value="systeme">systeme</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "font": {"color": "white"}, "id": "K\u00fcnstliche Intelligenz ist", "label": "K\u00fcnstliche Intelligenz ist", "shape": "dot", "title": "K\u00fcnstliche Intelligenz ist"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "ein", "label": "ein", "shape": "dot", "title": "ein"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "sich", "label": "sich", "shape": "dot", "title": "sich"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "schnell", "label": "schnell", "shape": "dot", "title": "schnell"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "entwickelndes", "label": "entwickelndes", "shape": "dot", "title": "entwickelndes"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Feld", "label": "Feld", "shape": "dot", "title": "Feld"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "das", "label": "das", "shape": "dot", "title": "das"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Potenzial", "label": "Potenzial", "shape": "dot", "title": "Potenzial"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "hat", "label": "hat", "shape": "dot", "title": "hat"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "viele", "label": "viele", "shape": "dot", "title": "viele"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Aspekte", "label": "Aspekte", "shape": "dot", "title": "Aspekte"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "unseres", "label": "unseres", "shape": "dot", "title": "unseres"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Lebens", "label": "Lebens", "shape": "dot", "title": "Lebens"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "zu", "label": "zu", "shape": "dot", "title": "zu"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "ver\u00e4ndern", "label": "ver\u00e4ndern", "shape": "dot", "title": "ver\u00e4ndern"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "interdisziplin\u00e4res", "label": "interdisziplin\u00e4res", "shape": "dot", "title": "interdisziplin\u00e4res"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "der", "label": "der", "shape": "dot", "title": "der"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Informatik", "label": "Informatik", "shape": "dot", "title": "Informatik"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "mit", "label": "mit", "shape": "dot", "title": "mit"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Automatisierung", "label": "Automatisierung", "shape": "dot", "title": "Automatisierung"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "intelligenten", "label": "intelligenten", "shape": "dot", "title": "intelligenten"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Verhaltens", "label": "Verhaltens", "shape": "dot", "title": "Verhaltens"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "befasst", "label": "befasst", "shape": "dot", "title": "befasst"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "entwickelnder", "label": "entwickelnder", "shape": "dot", "title": "entwickelnder"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Bereich", "label": "Bereich", "shape": "dot", "title": "Bereich"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Entwicklung", "label": "Entwicklung", "shape": "dot", "title": "Entwicklung"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "intelligenter", "label": "intelligenter", "shape": "dot", "title": "intelligenter"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Maschinen", "label": "Maschinen", "shape": "dot", "title": "Maschinen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "besch\u00e4ftigt", "label": "besch\u00e4ftigt", "shape": "dot", "title": "besch\u00e4ftigt"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "die", "label": "die", "shape": "dot", "title": "die"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Aufgaben", "label": "Aufgaben", "shape": "dot", "title": "Aufgaben"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "ausf\u00fchren", "label": "ausf\u00fchren", "shape": "dot", "title": "ausf\u00fchren"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "k\u00f6nnen", "label": "k\u00f6nnen", "shape": "dot", "title": "k\u00f6nnen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "typischerweise", "label": "typischerweise", "shape": "dot", "title": "typischerweise"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "menschliche", "label": "menschliche", "shape": "dot", "title": "menschliche"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Intelligenz", "label": "Intelligenz", "shape": "dot", "title": "Intelligenz"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "erfordern", "label": "erfordern", "shape": "dot", "title": "erfordern"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "von", "label": "von", "shape": "dot", "title": "von"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Agenten", "label": "Agenten", "shape": "dot", "title": "Agenten"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "also", "label": "also", "shape": "dot", "title": "also"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Systemen", "label": "Systemen", "shape": "dot", "title": "Systemen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "ihre", "label": "ihre", "shape": "dot", "title": "ihre"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Umgebung", "label": "Umgebung", "shape": "dot", "title": "Umgebung"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wahrnehmen", "label": "wahrnehmen", "shape": "dot", "title": "wahrnehmen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "und", "label": "und", "shape": "dot", "title": "und"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Handlungen", "label": "Handlungen", "shape": "dot", "title": "Handlungen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "um", "label": "um", "shape": "dot", "title": "um"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "bestimmte", "label": "bestimmte", "shape": "dot", "title": "bestimmte"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Ziele", "label": "Ziele", "shape": "dot", "title": "Ziele"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "erreichen", "label": "erreichen", "shape": "dot", "title": "erreichen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "darauf", "label": "darauf", "shape": "dot", "title": "darauf"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "abzielt", "label": "abzielt", "shape": "dot", "title": "abzielt"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "in", "label": "in", "shape": "dot", "title": "in"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Lage", "label": "Lage", "shape": "dot", "title": "Lage"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "versetzen", "label": "versetzen", "shape": "dot", "title": "versetzen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "auszuf\u00fchren", "label": "auszuf\u00fchren", "shape": "dot", "title": "auszuf\u00fchren"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "weites", "label": "weites", "shape": "dot", "title": "weites"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Aktionen", "label": "Aktionen", "shape": "dot", "title": "Aktionen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "sind", "label": "sind", "shape": "dot", "title": "sind"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "breites", "label": "breites", "shape": "dot", "title": "breites"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "d", "label": "d", "shape": "dot", "title": "d"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "h", "label": "h", "shape": "dot", "title": "h"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Massnahmen", "label": "Massnahmen", "shape": "dot", "title": "Massnahmen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "ergreifen", "label": "ergreifen", "shape": "dot", "title": "ergreifen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Erfolgschancen", "label": "Erfolgschancen", "shape": "dot", "title": "Erfolgschancen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "maximieren", "label": "maximieren", "shape": "dot", "title": "maximieren"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "rasch", "label": "rasch", "shape": "dot", "title": "rasch"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Computersysteme", "label": "Computersysteme", "shape": "dot", "title": "Computersysteme"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "l\u00f6sen", "label": "l\u00f6sen", "shape": "dot", "title": "l\u00f6sen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Zweig", "label": "Zweig", "shape": "dot", "title": "Zweig"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Ma\u00dfnahmen", "label": "Ma\u00dfnahmen", "shape": "dot", "title": "Ma\u00dfnahmen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Systeme", "label": "Systeme", "shape": "dot", "title": "Systeme"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "breit", "label": "breit", "shape": "dot", "title": "breit"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "gef\u00e4chertes", "label": "gef\u00e4chertes", "shape": "dot", "title": "gef\u00e4chertes"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Software", "label": "Software", "shape": "dot", "title": "Software"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "menschen\u00e4hnliche", "label": "menschen\u00e4hnliche", "shape": "dot", "title": "menschen\u00e4hnliche"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "erf\u00fcllen", "label": "erf\u00fcllen", "shape": "dot", "title": "erf\u00fcllen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Computer", "label": "Computer", "shape": "dot", "title": "Computer"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "F\u00e4higkeit", "label": "F\u00e4higkeit", "shape": "dot", "title": "F\u00e4higkeit"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Computersystemen", "label": "Computersystemen", "shape": "dot", "title": "Computersystemen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "heisst", "label": "heisst", "shape": "dot", "title": "heisst"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Umwelt", "label": "Umwelt", "shape": "dot", "title": "Umwelt"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "entwickeln", "label": "entwickeln", "shape": "dot", "title": "entwickeln"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "multidisziplin\u00e4res", "label": "multidisziplin\u00e4res", "shape": "dot", "title": "multidisziplin\u00e4res"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Computerprogramme", "label": "Computerprogramme", "shape": "dot", "title": "Computerprogramme"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "maschinen", "label": "maschinen", "shape": "dot", "title": "maschinen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "versucht", "label": "versucht", "shape": "dot", "title": "versucht"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "intelligente", "label": "intelligente", "shape": "dot", "title": "intelligente"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Verhaltensweisen", "label": "Verhaltensweisen", "shape": "dot", "title": "Verhaltensweisen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Computern", "label": "Computern", "shape": "dot", "title": "Computern"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "nachzubilden", "label": "nachzubilden", "shape": "dot", "title": "nachzubilden"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "denken", "label": "denken", "shape": "dot", "title": "denken"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "lernen", "label": "lernen", "shape": "dot", "title": "lernen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "handeln", "label": "handeln", "shape": "dot", "title": "handeln"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wie", "label": "wie", "shape": "dot", "title": "wie"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Menschen", "label": "Menschen", "shape": "dot", "title": "Menschen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "erledigen", "label": "erledigen", "shape": "dot", "title": "erledigen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Theorie", "label": "Theorie", "shape": "dot", "title": "Theorie"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "normalerweise", "label": "normalerweise", "shape": "dot", "title": "normalerweise"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Denkprozesse", "label": "Denkprozesse", "shape": "dot", "title": "Denkprozesse"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "imitieren", "label": "imitieren", "shape": "dot", "title": "imitieren"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Gebiet", "label": "Gebiet", "shape": "dot", "title": "Gebiet"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Probleme", "label": "Probleme", "shape": "dot", "title": "Probleme"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "vornehmen", "label": "vornehmen", "shape": "dot", "title": "vornehmen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "bestimmtes", "label": "bestimmtes", "shape": "dot", "title": "bestimmtes"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Ziel", "label": "Ziel", "shape": "dot", "title": "Ziel"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "kognitive", "label": "kognitive", "shape": "dot", "title": "kognitive"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Funktionen", "label": "Funktionen", "shape": "dot", "title": "Funktionen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Lernen", "label": "Lernen", "shape": "dot", "title": "Lernen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Probleml\u00f6sen", "label": "Probleml\u00f6sen", "shape": "dot", "title": "Probleml\u00f6sen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Entscheidungsfindung", "label": "Entscheidungsfindung", "shape": "dot", "title": "Entscheidungsfindung"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "nachzuahmen", "label": "nachzuahmen", "shape": "dot", "title": "nachzuahmen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Softwaresysteme", "label": "Softwaresysteme", "shape": "dot", "title": "Softwaresysteme"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "f\u00fcr", "label": "f\u00fcr", "shape": "dot", "title": "f\u00fcr"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "erforderlich", "label": "erforderlich", "shape": "dot", "title": "erforderlich"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "ist", "label": "ist", "shape": "dot", "title": "ist"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "dem", "label": "dem", "shape": "dot", "title": "dem"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Bau", "label": "Bau", "shape": "dot", "title": "Bau"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "weitreichendes", "label": "weitreichendes", "shape": "dot", "title": "weitreichendes"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "bef\u00e4higen", "label": "bef\u00e4higen", "shape": "dot", "title": "bef\u00e4higen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "argumentieren", "label": "argumentieren", "shape": "dot", "title": "argumentieren"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "vielversprechendes", "label": "vielversprechendes", "shape": "dot", "title": "vielversprechendes"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "umfasst", "label": "umfasst", "shape": "dot", "title": "umfasst"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "selbstst\u00e4ndig", "label": "selbstst\u00e4ndig", "shape": "dot", "title": "selbstst\u00e4ndig"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "aus", "label": "aus", "shape": "dot", "title": "aus"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "ihr", "label": "ihr", "shape": "dot", "title": "ihr"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "eigenst\u00e4ndig", "label": "eigenst\u00e4ndig", "shape": "dot", "title": "eigenst\u00e4ndig"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "zum", "label": "zum", "shape": "dot", "title": "zum"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "hei\u00dft", "label": "hei\u00dft", "shape": "dot", "title": "hei\u00dft"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "so", "label": "so", "shape": "dot", "title": "so"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "gestalten", "label": "gestalten", "shape": "dot", "title": "gestalten"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "dass", "label": "dass", "shape": "dot", "title": "dass"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "sie", "label": "sie", "shape": "dot", "title": "sie"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "autonom", "label": "autonom", "shape": "dot", "title": "autonom"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "F\u00e4higkeiten", "label": "F\u00e4higkeiten", "shape": "dot", "title": "F\u00e4higkeiten"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "besitzen", "label": "besitzen", "shape": "dot", "title": "besitzen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "z", "label": "z", "shape": "dot", "title": "z"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "B", "label": "B", "shape": "dot", "title": "B"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Entscheidungen", "label": "Entscheidungen", "shape": "dot", "title": "Entscheidungen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "treffen", "label": "treffen", "shape": "dot", "title": "treffen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "zeigen", "label": "zeigen", "shape": "dot", "title": "zeigen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "schaffen", "label": "schaffen", "shape": "dot", "title": "schaffen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "auf", "label": "auf", "shape": "dot", "title": "auf"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "konzentriert", "label": "konzentriert", "shape": "dot", "title": "konzentriert"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Intelligenzfunktionen", "label": "Intelligenzfunktionen", "shape": "dot", "title": "Intelligenzfunktionen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Intelligenzleistungen", "label": "Intelligenzleistungen", "shape": "dot", "title": "Intelligenzleistungen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "vollbringen", "label": "vollbringen", "shape": "dot", "title": "vollbringen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "vorgegebene", "label": "vorgegebene", "shape": "dot", "title": "vorgegebene"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "oder", "label": "oder", "shape": "dot", "title": "oder"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "nachahmen", "label": "nachahmen", "shape": "dot", "title": "nachahmen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Probleml\u00f6sung", "label": "Probleml\u00f6sung", "shape": "dot", "title": "Probleml\u00f6sung"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "aufweisen", "label": "aufweisen", "shape": "dot", "title": "aufweisen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "simulieren", "label": "simulieren", "shape": "dot", "title": "simulieren"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "demonstrieren", "label": "demonstrieren", "shape": "dot", "title": "demonstrieren"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "indem", "label": "indem", "shape": "dot", "title": "indem"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "intelligent", "label": "intelligent", "shape": "dot", "title": "intelligent"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "machen", "label": "machen", "shape": "dot", "title": "machen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "sodass", "label": "sodass", "shape": "dot", "title": "sodass"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "wahrzunehmen", "label": "wahrzunehmen", "shape": "dot", "title": "wahrzunehmen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Teilgebiet", "label": "Teilgebiet", "shape": "dot", "title": "Teilgebiet"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "erbringen", "label": "erbringen", "shape": "dot", "title": "erbringen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Erstellen", "label": "Erstellen", "shape": "dot", "title": "Erstellen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Erschaffen", "label": "Erschaffen", "shape": "dot", "title": "Erschaffen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "menschen\u00e4hnlichen", "label": "menschen\u00e4hnlichen", "shape": "dot", "title": "menschen\u00e4hnlichen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "kognitiven", "label": "kognitiven", "shape": "dot", "title": "kognitiven"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "auszustatten", "label": "auszustatten", "shape": "dot", "title": "auszustatten"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "programmieren", "label": "programmieren", "shape": "dot", "title": "programmieren"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "unsere", "label": "unsere", "shape": "dot", "title": "unsere"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Gesellschaft", "label": "Gesellschaft", "shape": "dot", "title": "Gesellschaft"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "vielf\u00e4ltige", "label": "vielf\u00e4ltige", "shape": "dot", "title": "vielf\u00e4ltige"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Weise", "label": "Weise", "shape": "dot", "title": "Weise"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "transformieren", "label": "transformieren", "shape": "dot", "title": "transformieren"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "\u00fcbernehmen", "label": "\u00fcbernehmen", "shape": "dot", "title": "\u00fcbernehmen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "\u00fcbertreffen", "label": "\u00fcbertreffen", "shape": "dot", "title": "\u00fcbertreffen"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "multidisziplin\u00e4rer", "label": "multidisziplin\u00e4rer", "shape": "dot", "title": "multidisziplin\u00e4rer"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "reagieren", "label": "reagieren", "shape": "dot", "title": "reagieren"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "nachbilden", "label": "nachbilden", "shape": "dot", "title": "nachbilden"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "es", "label": "es", "shape": "dot", "title": "es"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "erm\u00f6glicht", "label": "erm\u00f6glicht", "shape": "dot", "title": "erm\u00f6glicht"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "bef\u00e4higt", "label": "bef\u00e4higt", "shape": "dot", "title": "bef\u00e4higt"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "vielversprechender", "label": "vielversprechender", "shape": "dot", "title": "vielversprechender"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "aber", "label": "aber", "shape": "dot", "title": "aber"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "auch", "label": "auch", "shape": "dot", "title": "auch"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "komplexer", "label": "komplexer", "shape": "dot", "title": "komplexer"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "daraus", "label": "daraus", "shape": "dot", "title": "daraus"}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "systeme", "label": "systeme", "shape": "dot", "title": "systeme"}]);
+                  edges = new vis.DataSet([{"color": "rgb(255,0,0)", "from": "K\u00fcnstliche Intelligenz ist", "label": "91.44%", "title": "1378x", "to": "ein", "value": 1378}, {"color": "rgb(115,139,0)", "from": "ein", "label": "45.47%", "title": "627x", "to": "sich", "value": 627}, {"color": "rgb(103,151,0)", "from": "sich", "label": "30.3%", "title": "560x", "to": "schnell", "value": 560}, {"color": "rgb(55,199,0)", "from": "schnell", "label": "53.57%", "title": "300x", "to": "entwickelndes", "value": 300}, {"color": "rgb(58,196,0)", "from": "entwickelndes", "label": "93.79%", "title": "317x", "to": "Feld", "value": 317}, {"color": "rgb(68,186,0)", "from": "Feld", "label": "40.42%", "title": "369x", "to": "das", "value": 369}, {"color": "rgb(1,253,0)", "from": "das", "label": "0.8%", "title": "8x", "to": "das", "value": 8}, {"color": "rgb(1,253,0)", "from": "das", "label": "0.8%", "title": "8x", "to": "Potenzial", "value": 8}, {"color": "rgb(1,253,0)", "from": "Potenzial", "label": "100.0%", "title": "8x", "to": "hat", "value": 8}, {"color": "rgb(1,253,0)", "from": "hat", "label": "70.0%", "title": "7x", "to": "viele", "value": 7}, {"color": "rgb(1,253,0)", "from": "viele", "label": "100.0%", "title": "7x", "to": "Aspekte", "value": 7}, {"color": "rgb(1,253,0)", "from": "Aspekte", "label": "100.0%", "title": "7x", "to": "unseres", "value": 7}, {"color": "rgb(1,253,0)", "from": "unseres", "label": "100.0%", "title": "7x", "to": "Lebens", "value": 7}, {"color": "rgb(1,253,0)", "from": "Lebens", "label": "100.0%", "title": "7x", "to": "zu", "value": 7}, {"color": "rgb(1,253,0)", "from": "zu", "label": "0.82%", "title": "7x", "to": "ver\u00e4ndern", "value": 7}, {"color": "rgb(25,230,0)", "from": "ein", "label": "9.86%", "title": "136x", "to": "interdisziplin\u00e4res", "value": 136}, {"color": "rgb(25,230,0)", "from": "interdisziplin\u00e4res", "label": "100.0%", "title": "136x", "to": "Feld", "value": 136}, {"color": "rgb(100,154,0)", "from": "Feld", "label": "59.58%", "title": "544x", "to": "der", "value": 544}, {"color": "rgb(182,72,0)", "from": "der", "label": "33.17%", "title": "986x", "to": "Informatik", "value": 986}, {"color": "rgb(110,144,0)", "from": "Informatik", "label": "60.75%", "title": "599x", "to": "das", "value": 599}, {"color": "rgb(151,103,0)", "from": "das", "label": "82.29%", "title": "818x", "to": "sich", "value": 818}, {"color": "rgb(224,30,0)", "from": "sich", "label": "65.75%", "title": "1215x", "to": "mit", "value": 1215}, {"color": "rgb(224,30,0)", "from": "mit", "label": "96.58%", "title": "1215x", "to": "der", "value": 1215}, {"color": "rgb(5,249,0)", "from": "der", "label": "1.08%", "title": "32x", "to": "Automatisierung", "value": 32}, {"color": "rgb(5,249,0)", "from": "Automatisierung", "label": "100.0%", "title": "32x", "to": "intelligenten", "value": 32}, {"color": "rgb(5,249,0)", "from": "intelligenten", "label": "9.52%", "title": "32x", "to": "Verhaltens", "value": 32}, {"color": "rgb(4,250,0)", "from": "Verhaltens", "label": "78.12%", "title": "25x", "to": "befasst", "value": 25}, {"color": "rgb(47,207,0)", "from": "schnell", "label": "46.43%", "title": "260x", "to": "entwickelnder", "value": 260}, {"color": "rgb(53,201,0)", "from": "entwickelnder", "label": "99.32%", "title": "291x", "to": "Bereich", "value": 291}, {"color": "rgb(68,186,0)", "from": "Bereich", "label": "100.0%", "title": "372x", "to": "der", "value": 372}, {"color": "rgb(73,181,0)", "from": "der", "label": "13.42%", "title": "399x", "to": "sich", "value": 399}, {"color": "rgb(218,36,0)", "from": "der", "label": "39.76%", "title": "1182x", "to": "Entwicklung", "value": 1182}, {"color": "rgb(151,103,0)", "from": "Entwicklung", "label": "68.28%", "title": "820x", "to": "intelligenter", "value": 820}, {"color": "rgb(36,218,0)", "from": "intelligenter", "label": "23.9%", "title": "196x", "to": "Maschinen", "value": 196}, {"color": "rgb(6,248,0)", "from": "Maschinen", "label": "9.26%", "title": "35x", "to": "besch\u00e4ftigt", "value": 35}, {"color": "rgb(30,224,0)", "from": "besch\u00e4ftigt", "label": "69.46%", "title": "166x", "to": "die", "value": 166}, {"color": "rgb(62,192,0)", "from": "die", "label": "15.42%", "title": "341x", "to": "Aufgaben", "value": 341}, {"color": "rgb(69,185,0)", "from": "Aufgaben", "label": "41.33%", "title": "374x", "to": "ausf\u00fchren", "value": 374}, {"color": "rgb(85,170,0)", "from": "ausf\u00fchren", "label": "66.38%", "title": "460x", "to": "k\u00f6nnen", "value": 460}, {"color": "rgb(60,194,0)", "from": "k\u00f6nnen", "label": "71.52%", "title": "329x", "to": "die", "value": 329}, {"color": "rgb(134,120,0)", "from": "die", "label": "32.96%", "title": "729x", "to": "typischerweise", "value": 729}, {"color": "rgb(134,120,0)", "from": "typischerweise", "label": "100.0%", "title": "729x", "to": "menschliche", "value": 729}, {"color": "rgb(146,108,0)", "from": "menschliche", "label": "99.0%", "title": "792x", "to": "Intelligenz", "value": 792}, {"color": "rgb(139,115,0)", "from": "Intelligenz", "label": "93.91%", "title": "756x", "to": "erfordern", "value": 756}, {"color": "rgb(14,240,0)", "from": "ein", "label": "5.66%", "title": "78x", "to": "Bereich", "value": 78}, {"color": "rgb(70,184,0)", "from": "Entwicklung", "label": "31.72%", "title": "381x", "to": "von", "value": 381}, {"color": "rgb(56,198,0)", "from": "von", "label": "55.88%", "title": "304x", "to": "intelligenten", "value": 304}, {"color": "rgb(48,206,0)", "from": "intelligenten", "label": "78.87%", "title": "265x", "to": "Agenten", "value": 265}, {"color": "rgb(124,130,0)", "from": "Agenten", "label": "81.03%", "title": "675x", "to": "befasst", "value": 675}, {"color": "rgb(21,233,0)", "from": "befasst", "label": "12.85%", "title": "118x", "to": "also", "value": 118}, {"color": "rgb(18,236,0)", "from": "also", "label": "69.86%", "title": "102x", "to": "Systemen", "value": 102}, {"color": "rgb(60,194,0)", "from": "Systemen", "label": "89.56%", "title": "326x", "to": "die", "value": 326}, {"color": "rgb(77,177,0)", "from": "die", "label": "19.08%", "title": "422x", "to": "ihre", "value": 422}, {"color": "rgb(67,187,0)", "from": "ihre", "label": "64.13%", "title": "363x", "to": "Umgebung", "value": 363}, {"color": "rgb(66,188,0)", "from": "Umgebung", "label": "99.17%", "title": "360x", "to": "wahrnehmen", "value": 360}, {"color": "rgb(76,178,0)", "from": "wahrnehmen", "label": "98.35%", "title": "416x", "to": "und", "value": 416}, {"color": "rgb(22,232,0)", "from": "und", "label": "16.29%", "title": "122x", "to": "Handlungen", "value": 122}, {"color": "rgb(23,231,0)", "from": "Handlungen", "label": "97.73%", "title": "129x", "to": "ausf\u00fchren", "value": 129}, {"color": "rgb(17,237,0)", "from": "k\u00f6nnen", "label": "20.22%", "title": "93x", "to": "um", "value": 93}, {"color": "rgb(50,204,0)", "from": "um", "label": "64.47%", "title": "274x", "to": "bestimmte", "value": 274}, {"color": "rgb(50,204,0)", "from": "bestimmte", "label": "100.0%", "title": "274x", "to": "Ziele", "value": 274}, {"color": "rgb(74,180,0)", "from": "Ziele", "label": "100.0%", "title": "404x", "to": "zu", "value": 404}, {"color": "rgb(74,180,0)", "from": "zu", "label": "47.42%", "title": "405x", "to": "erreichen", "value": 405}, {"color": "rgb(22,232,0)", "from": "das", "label": "12.58%", "title": "125x", "to": "darauf", "value": 125}, {"color": "rgb(24,230,0)", "from": "darauf", "label": "99.25%", "title": "133x", "to": "abzielt", "value": 133}, {"color": "rgb(4,250,0)", "from": "abzielt", "label": "18.05%", "title": "24x", "to": "Maschinen", "value": 24}, {"color": "rgb(0,254,0)", "from": "Maschinen", "label": "1.59%", "title": "6x", "to": "in", "value": 6}, {"color": "rgb(12,242,0)", "from": "in", "label": "16.32%", "title": "71x", "to": "die", "value": 71}, {"color": "rgb(12,242,0)", "from": "die", "label": "3.21%", "title": "71x", "to": "Lage", "value": 71}, {"color": "rgb(12,242,0)", "from": "Lage", "label": "16.44%", "title": "71x", "to": "zu", "value": 71}, {"color": "rgb(12,242,0)", "from": "zu", "label": "8.31%", "title": "71x", "to": "versetzen", "value": 71}, {"color": "rgb(12,242,0)", "from": "versetzen", "label": "100.0%", "title": "71x", "to": "Aufgaben", "value": 71}, {"color": "rgb(54,200,0)", "from": "Aufgaben", "label": "32.38%", "title": "293x", "to": "auszuf\u00fchren", "value": 293}, {"color": "rgb(51,203,0)", "from": "auszuf\u00fchren", "label": "93.92%", "title": "278x", "to": "die", "value": 278}, {"color": "rgb(21,233,0)", "from": "ein", "label": "8.41%", "title": "116x", "to": "weites", "value": 116}, {"color": "rgb(21,233,0)", "from": "weites", "label": "100.0%", "title": "116x", "to": "Feld", "value": 116}, {"color": "rgb(42,212,0)", "from": "ausf\u00fchren", "label": "33.48%", "title": "232x", "to": "um", "value": 232}, {"color": "rgb(105,150,0)", "from": "intelligenter", "label": "69.27%", "title": "568x", "to": "Agenten", "value": 568}, {"color": "rgb(32,222,0)", "from": "und", "label": "23.63%", "title": "177x", "to": "Aktionen", "value": 177}, {"color": "rgb(33,221,0)", "from": "Aktionen", "label": "100.0%", "title": "181x", "to": "ausf\u00fchren", "value": 181}, {"color": "rgb(101,153,0)", "from": "befasst", "label": "59.8%", "title": "549x", "to": "die", "value": 549}, {"color": "rgb(66,188,0)", "from": "in", "label": "82.99%", "title": "361x", "to": "der", "value": 361}, {"color": "rgb(66,188,0)", "from": "der", "label": "12.14%", "title": "361x", "to": "Lage", "value": 361}, {"color": "rgb(66,188,0)", "from": "Lage", "label": "83.56%", "title": "361x", "to": "sind", "value": 361}, {"color": "rgb(50,204,0)", "from": "sind", "label": "74.73%", "title": "272x", "to": "Aufgaben", "value": 272}, {"color": "rgb(39,215,0)", "from": "ein", "label": "15.59%", "title": "215x", "to": "breites", "value": 215}, {"color": "rgb(39,215,0)", "from": "breites", "label": "100.0%", "title": "215x", "to": "Feld", "value": 215}, {"color": "rgb(43,211,0)", "from": "befasst", "label": "25.82%", "title": "237x", "to": "d", "value": 237}, {"color": "rgb(51,203,0)", "from": "d", "label": "100.0%", "title": "280x", "to": "h", "value": 280}, {"color": "rgb(27,227,0)", "from": "h", "label": "52.5%", "title": "147x", "to": "Systemen", "value": 147}, {"color": "rgb(6,248,0)", "from": "und", "label": "4.67%", "title": "35x", "to": "Massnahmen", "value": 35}, {"color": "rgb(6,248,0)", "from": "Massnahmen", "label": "100.0%", "title": "35x", "to": "ergreifen", "value": 35}, {"color": "rgb(16,238,0)", "from": "ergreifen", "label": "90.72%", "title": "88x", "to": "um", "value": 88}, {"color": "rgb(25,229,0)", "from": "um", "label": "33.18%", "title": "141x", "to": "ihre", "value": 141}, {"color": "rgb(3,251,0)", "from": "ihre", "label": "3.18%", "title": "18x", "to": "Erfolgschancen", "value": 18}, {"color": "rgb(3,251,0)", "from": "Erfolgschancen", "label": "100.0%", "title": "18x", "to": "zu", "value": 18}, {"color": "rgb(3,251,0)", "from": "zu", "label": "2.11%", "title": "18x", "to": "maximieren", "value": 18}, {"color": "rgb(12,242,0)", "from": "sich", "label": "3.84%", "title": "71x", "to": "rasch", "value": 71}, {"color": "rgb(6,248,0)", "from": "rasch", "label": "53.52%", "title": "38x", "to": "entwickelndes", "value": 38}, {"color": "rgb(0,254,0)", "from": "intelligenter", "label": "0.73%", "title": "6x", "to": "Computersysteme", "value": 6}, {"color": "rgb(2,252,0)", "from": "Computersysteme", "label": "55.56%", "title": "15x", "to": "befasst", "value": 15}, {"color": "rgb(29,225,0)", "from": "Agenten", "label": "18.97%", "title": "158x", "to": "besch\u00e4ftigt", "value": 158}, {"color": "rgb(38,216,0)", "from": "Aufgaben", "label": "23.2%", "title": "210x", "to": "zu", "value": 210}, {"color": "rgb(7,247,0)", "from": "zu", "label": "5.15%", "title": "44x", "to": "l\u00f6sen", "value": 44}, {"color": "rgb(1,253,0)", "from": "l\u00f6sen", "label": "35.0%", "title": "7x", "to": "die", "value": 7}, {"color": "rgb(6,248,0)", "from": "ein", "label": "2.47%", "title": "34x", "to": "Zweig", "value": 34}, {"color": "rgb(6,248,0)", "from": "Zweig", "label": "100.0%", "title": "36x", "to": "der", "value": 36}, {"color": "rgb(11,243,0)", "from": "und", "label": "8.28%", "title": "62x", "to": "Ma\u00dfnahmen", "value": 62}, {"color": "rgb(10,244,0)", "from": "Ma\u00dfnahmen", "label": "95.16%", "title": "59x", "to": "ergreifen", "value": 59}, {"color": "rgb(22,232,0)", "from": "ihre", "label": "21.73%", "title": "123x", "to": "Ziele", "value": 123}, {"color": "rgb(15,240,0)", "from": "h", "label": "29.29%", "title": "82x", "to": "Systeme", "value": 82}, {"color": "rgb(21,233,0)", "from": "Systeme", "label": "56.37%", "title": "115x", "to": "die", "value": 115}, {"color": "rgb(3,251,0)", "from": "ein", "label": "1.6%", "title": "22x", "to": "breit", "value": 22}, {"color": "rgb(3,251,0)", "from": "breit", "label": "100.0%", "title": "22x", "to": "gef\u00e4chertes", "value": 22}, {"color": "rgb(3,251,0)", "from": "gef\u00e4chertes", "label": "95.45%", "title": "21x", "to": "Feld", "value": 21}, {"color": "rgb(5,249,0)", "from": "intelligenten", "label": "9.82%", "title": "33x", "to": "Maschinen", "value": 33}, {"color": "rgb(29,225,0)", "from": "Maschinen", "label": "42.06%", "title": "159x", "to": "und", "value": 159}, {"color": "rgb(2,252,0)", "from": "und", "label": "2.0%", "title": "15x", "to": "Software", "value": 15}, {"color": "rgb(0,254,0)", "from": "Software", "label": "13.33%", "title": "2x", "to": "besch\u00e4ftigt", "value": 2}, {"color": "rgb(12,242,0)", "from": "sind", "label": "19.23%", "title": "70x", "to": "menschen\u00e4hnliche", "value": 70}, {"color": "rgb(18,236,0)", "from": "menschen\u00e4hnliche", "label": "53.12%", "title": "102x", "to": "Aufgaben", "value": 102}, {"color": "rgb(7,247,0)", "from": "zu", "label": "5.15%", "title": "44x", "to": "erf\u00fcllen", "value": 44}, {"color": "rgb(5,249,0)", "from": "rasch", "label": "46.48%", "title": "33x", "to": "entwickelnder", "value": 33}, {"color": "rgb(4,250,0)", "from": "und", "label": "3.6%", "title": "27x", "to": "Systemen", "value": 27}, {"color": "rgb(3,251,0)", "from": "Systemen", "label": "6.04%", "title": "22x", "to": "befasst", "value": 22}, {"color": "rgb(18,236,0)", "from": "abzielt", "label": "75.19%", "title": "100x", "to": "Computer", "value": 100}, {"color": "rgb(11,243,0)", "from": "Computer", "label": "62.5%", "title": "65x", "to": "in", "value": 65}, {"color": "rgb(23,231,0)", "from": "K\u00fcnstliche Intelligenz ist", "label": "8.56%", "title": "129x", "to": "die", "value": 129}, {"color": "rgb(23,231,0)", "from": "die", "label": "5.88%", "title": "130x", "to": "F\u00e4higkeit", "value": 130}, {"color": "rgb(23,231,0)", "from": "F\u00e4higkeit", "label": "100.0%", "title": "130x", "to": "von", "value": 130}, {"color": "rgb(20,234,0)", "from": "von", "label": "20.59%", "title": "112x", "to": "Maschinen", "value": 112}, {"color": "rgb(7,247,0)", "from": "Maschinen", "label": "10.85%", "title": "41x", "to": "Aufgaben", "value": 41}, {"color": "rgb(13,241,0)", "from": "von", "label": "13.24%", "title": "72x", "to": "Computersystemen", "value": 72}, {"color": "rgb(0,254,0)", "from": "Computersystemen", "label": "5.41%", "title": "4x", "to": "besch\u00e4ftigt", "value": 4}, {"color": "rgb(2,252,0)", "from": "befasst", "label": "1.53%", "title": "14x", "to": "das", "value": 14}, {"color": "rgb(0,254,0)", "from": "das", "label": "0.6%", "title": "6x", "to": "heisst", "value": 6}, {"color": "rgb(0,254,0)", "from": "heisst", "label": "50.0%", "title": "3x", "to": "Systemen", "value": 3}, {"color": "rgb(2,252,0)", "from": "Systemen", "label": "3.57%", "title": "13x", "to": "besch\u00e4ftigt", "value": 13}, {"color": "rgb(11,243,0)", "from": "ihre", "label": "10.95%", "title": "62x", "to": "Umwelt", "value": 62}, {"color": "rgb(11,243,0)", "from": "Umwelt", "label": "100.0%", "title": "62x", "to": "wahrnehmen", "value": 62}, {"color": "rgb(3,251,0)", "from": "Maschinen", "label": "5.29%", "title": "20x", "to": "zu", "value": 20}, {"color": "rgb(8,246,0)", "from": "zu", "label": "5.39%", "title": "46x", "to": "entwickeln", "value": 46}, {"color": "rgb(6,248,0)", "from": "entwickeln", "label": "76.09%", "title": "35x", "to": "die", "value": 35}, {"color": "rgb(11,243,0)", "from": "ein", "label": "4.71%", "title": "65x", "to": "Feld", "value": 65}, {"color": "rgb(6,248,0)", "from": "ein", "label": "2.76%", "title": "38x", "to": "multidisziplin\u00e4res", "value": 38}, {"color": "rgb(6,248,0)", "from": "multidisziplin\u00e4res", "label": "100.0%", "title": "38x", "to": "Feld", "value": 38}, {"color": "rgb(5,249,0)", "from": "h", "label": "10.36%", "title": "29x", "to": "mit", "value": 29}, {"color": "rgb(7,247,0)", "from": "mit", "label": "3.34%", "title": "42x", "to": "Systemen", "value": 42}, {"color": "rgb(10,244,0)", "from": "Computersystemen", "label": "77.03%", "title": "57x", "to": "befasst", "value": 57}, {"color": "rgb(8,246,0)", "from": "intelligenter", "label": "5.85%", "title": "48x", "to": "Computerprogramme", "value": 48}, {"color": "rgb(6,248,0)", "from": "Computerprogramme", "label": "74.0%", "title": "37x", "to": "und", "value": 37}, {"color": "rgb(4,250,0)", "from": "und", "label": "3.47%", "title": "26x", "to": "maschinen", "value": 26}, {"color": "rgb(3,251,0)", "from": "maschinen", "label": "84.62%", "title": "22x", "to": "befasst", "value": 22}, {"color": "rgb(0,254,0)", "from": "das", "label": "0.6%", "title": "6x", "to": "versucht", "value": 6}, {"color": "rgb(0,254,0)", "from": "versucht", "label": "50.0%", "title": "3x", "to": "intelligente", "value": 3}, {"color": "rgb(0,254,0)", "from": "intelligente", "label": "50.0%", "title": "3x", "to": "Verhaltensweisen", "value": 3}, {"color": "rgb(0,254,0)", "from": "Verhaltensweisen", "label": "100.0%", "title": "3x", "to": "in", "value": 3}, {"color": "rgb(0,254,0)", "from": "in", "label": "0.46%", "title": "2x", "to": "Computern", "value": 2}, {"color": "rgb(0,254,0)", "from": "Computern", "label": "8.33%", "title": "2x", "to": "nachzubilden", "value": 2}, {"color": "rgb(2,252,0)", "from": "die", "label": "0.72%", "title": "16x", "to": "denken", "value": 16}, {"color": "rgb(3,251,0)", "from": "denken", "label": "60.61%", "title": "20x", "to": "lernen", "value": 20}, {"color": "rgb(7,247,0)", "from": "lernen", "label": "93.18%", "title": "41x", "to": "und", "value": 41}, {"color": "rgb(2,252,0)", "from": "und", "label": "2.0%", "title": "15x", "to": "handeln", "value": 15}, {"color": "rgb(3,251,0)", "from": "handeln", "label": "62.07%", "title": "18x", "to": "k\u00f6nnen", "value": 18}, {"color": "rgb(0,254,0)", "from": "k\u00f6nnen", "label": "1.3%", "title": "6x", "to": "wie", "value": 6}, {"color": "rgb(2,252,0)", "from": "wie", "label": "18.57%", "title": "13x", "to": "Menschen", "value": 13}, {"color": "rgb(5,250,0)", "from": "besch\u00e4ftigt", "label": "11.72%", "title": "28x", "to": "also", "value": 28}, {"color": "rgb(2,252,0)", "from": "Aufgaben", "label": "1.77%", "title": "16x", "to": "erledigen", "value": 16}, {"color": "rgb(2,252,0)", "from": "erledigen", "label": "11.76%", "title": "16x", "to": "k\u00f6nnen", "value": 16}, {"color": "rgb(8,246,0)", "from": "Maschinen", "label": "12.17%", "title": "46x", "to": "befasst", "value": 46}, {"color": "rgb(0,254,0)", "from": "der", "label": "0.13%", "title": "4x", "to": "Theorie", "value": 4}, {"color": "rgb(0,254,0)", "from": "Theorie", "label": "100.0%", "title": "4x", "to": "und", "value": 4}, {"color": "rgb(0,254,0)", "from": "und", "label": "0.53%", "title": "4x", "to": "Entwicklung", "value": 4}, {"color": "rgb(10,244,0)", "from": "die", "label": "2.58%", "title": "57x", "to": "normalerweise", "value": 57}, {"color": "rgb(10,244,0)", "from": "normalerweise", "label": "100.0%", "title": "57x", "to": "menschliche", "value": 57}, {"color": "rgb(10,244,0)", "from": "Maschinen", "label": "15.87%", "title": "60x", "to": "menschen\u00e4hnliche", "value": 60}, {"color": "rgb(4,250,0)", "from": "menschen\u00e4hnliche", "label": "12.5%", "title": "24x", "to": "Denkprozesse", "value": 24}, {"color": "rgb(0,254,0)", "from": "Denkprozesse", "label": "14.29%", "title": "4x", "to": "zu", "value": 4}, {"color": "rgb(0,254,0)", "from": "zu", "label": "0.47%", "title": "4x", "to": "imitieren", "value": 4}, {"color": "rgb(0,254,0)", "from": "imitieren", "label": "75.0%", "title": "3x", "to": "und", "value": 3}, {"color": "rgb(3,251,0)", "from": "und", "label": "2.54%", "title": "19x", "to": "Aufgaben", "value": 19}, {"color": "rgb(23,231,0)", "from": "zu", "label": "14.87%", "title": "127x", "to": "erledigen", "value": 127}, {"color": "rgb(22,232,0)", "from": "erledigen", "label": "88.24%", "title": "120x", "to": "die", "value": 120}, {"color": "rgb(3,251,0)", "from": "entwickelndes", "label": "6.21%", "title": "21x", "to": "Gebiet", "value": 21}, {"color": "rgb(9,245,0)", "from": "Gebiet", "label": "96.15%", "title": "50x", "to": "der", "value": 50}, {"color": "rgb(2,252,0)", "from": "und", "label": "1.74%", "title": "13x", "to": "Probleme", "value": 13}, {"color": "rgb(1,253,0)", "from": "Probleme", "label": "50.0%", "title": "9x", "to": "l\u00f6sen", "value": 9}, {"color": "rgb(1,253,0)", "from": "l\u00f6sen", "label": "40.0%", "title": "8x", "to": "k\u00f6nnen", "value": 8}, {"color": "rgb(15,239,0)", "from": "und", "label": "11.62%", "title": "87x", "to": "Systeme", "value": 87}, {"color": "rgb(2,252,0)", "from": "Systeme", "label": "6.86%", "title": "14x", "to": "besch\u00e4ftigt", "value": 14}, {"color": "rgb(13,241,0)", "from": "Systeme", "label": "36.76%", "title": "75x", "to": "befasst", "value": 75}, {"color": "rgb(2,252,0)", "from": "Software", "label": "86.67%", "title": "13x", "to": "befasst", "value": 13}, {"color": "rgb(0,254,0)", "from": "Handlungen", "label": "2.27%", "title": "3x", "to": "vornehmen", "value": 3}, {"color": "rgb(0,254,0)", "from": "vornehmen", "label": "100.0%", "title": "3x", "to": "um", "value": 3}, {"color": "rgb(5,249,0)", "from": "ein", "label": "2.1%", "title": "29x", "to": "Gebiet", "value": 29}, {"color": "rgb(3,251,0)", "from": "erf\u00fcllen", "label": "81.82%", "title": "18x", "to": "die", "value": 18}, {"color": "rgb(0,255,0)", "from": "um", "label": "0.24%", "title": "1x", "to": "ein", "value": 1}, {"color": "rgb(0,255,0)", "from": "ein", "label": "0.07%", "title": "1x", "to": "bestimmtes", "value": 1}, {"color": "rgb(0,255,0)", "from": "bestimmtes", "label": "100.0%", "title": "1x", "to": "Ziel", "value": 1}, {"color": "rgb(0,255,0)", "from": "Ziel", "label": "33.33%", "title": "1x", "to": "zu", "value": 1}, {"color": "rgb(3,251,0)", "from": "Computer", "label": "18.27%", "title": "19x", "to": "zu", "value": 19}, {"color": "rgb(0,254,0)", "from": "wahrnehmen", "label": "0.95%", "title": "4x", "to": "denken", "value": 4}, {"color": "rgb(6,248,0)", "from": "menschen\u00e4hnliche", "label": "17.71%", "title": "34x", "to": "kognitive", "value": 34}, {"color": "rgb(4,250,0)", "from": "kognitive", "label": "63.89%", "title": "23x", "to": "Funktionen", "value": 23}, {"color": "rgb(1,253,0)", "from": "Funktionen", "label": "47.83%", "title": "11x", "to": "auszuf\u00fchren", "value": 11}, {"color": "rgb(1,253,0)", "from": "auszuf\u00fchren", "label": "3.72%", "title": "11x", "to": "wie", "value": 11}, {"color": "rgb(8,246,0)", "from": "wie", "label": "64.29%", "title": "45x", "to": "Lernen", "value": 45}, {"color": "rgb(8,246,0)", "from": "Lernen", "label": "80.7%", "title": "46x", "to": "Probleml\u00f6sen", "value": 46}, {"color": "rgb(8,246,0)", "from": "Probleml\u00f6sen", "label": "100.0%", "title": "46x", "to": "und", "value": 46}, {"color": "rgb(9,245,0)", "from": "und", "label": "6.68%", "title": "50x", "to": "Entscheidungsfindung", "value": 50}, {"color": "rgb(1,253,0)", "from": "Maschinen", "label": "1.85%", "title": "7x", "to": "menschliche", "value": 7}, {"color": "rgb(0,254,0)", "from": "Intelligenz", "label": "0.25%", "title": "2x", "to": "nachzuahmen", "value": 2}, {"color": "rgb(2,252,0)", "from": "und", "label": "2.14%", "title": "16x", "to": "Softwaresysteme", "value": 16}, {"color": "rgb(2,252,0)", "from": "Softwaresysteme", "label": "81.25%", "title": "13x", "to": "befasst", "value": 13}, {"color": "rgb(2,252,0)", "from": "Funktionen", "label": "52.17%", "title": "12x", "to": "wie", "value": 12}, {"color": "rgb(2,252,0)", "from": "Entscheidungsfindung", "label": "41.46%", "title": "17x", "to": "auszuf\u00fchren", "value": 17}, {"color": "rgb(5,249,0)", "from": "k\u00f6nnen", "label": "6.52%", "title": "30x", "to": "f\u00fcr", "value": 30}, {"color": "rgb(5,249,0)", "from": "f\u00fcr", "label": "100.0%", "title": "30x", "to": "die", "value": 30}, {"color": "rgb(5,249,0)", "from": "Intelligenz", "label": "3.73%", "title": "30x", "to": "erforderlich", "value": 30}, {"color": "rgb(5,249,0)", "from": "erforderlich", "label": "100.0%", "title": "30x", "to": "ist", "value": 30}, {"color": "rgb(0,254,0)", "from": "Verhaltens", "label": "18.75%", "title": "6x", "to": "und", "value": 6}, {"color": "rgb(0,254,0)", "from": "und", "label": "0.4%", "title": "3x", "to": "dem", "value": 3}, {"color": "rgb(0,255,0)", "from": "dem", "label": "33.33%", "title": "1x", "to": "Bau", "value": 1}, {"color": "rgb(0,255,0)", "from": "Bau", "label": "100.0%", "title": "1x", "to": "von", "value": 1}, {"color": "rgb(0,254,0)", "from": "Maschinen", "label": "0.53%", "title": "2x", "to": "die", "value": 2}, {"color": "rgb(11,243,0)", "from": "die", "label": "2.8%", "title": "62x", "to": "menschen\u00e4hnliche", "value": 62}, {"color": "rgb(0,255,0)", "from": "k\u00f6nnen", "label": "0.22%", "title": "1x", "to": "befasst", "value": 1}, {"color": "rgb(0,254,0)", "from": "ein", "label": "0.29%", "title": "4x", "to": "weitreichendes", "value": 4}, {"color": "rgb(0,254,0)", "from": "weitreichendes", "label": "75.0%", "title": "3x", "to": "Feld", "value": 3}, {"color": "rgb(0,254,0)", "from": "besch\u00e4ftigt", "label": "0.84%", "title": "2x", "to": "das", "value": 2}, {"color": "rgb(0,254,0)", "from": "heisst", "label": "33.33%", "title": "2x", "to": "Systeme", "value": 2}, {"color": "rgb(7,247,0)", "from": "besch\u00e4ftigt", "label": "17.99%", "title": "43x", "to": "d", "value": 43}, {"color": "rgb(1,253,0)", "from": "zu", "label": "1.05%", "title": "9x", "to": "bef\u00e4higen", "value": 9}, {"color": "rgb(1,253,0)", "from": "bef\u00e4higen", "label": "100.0%", "title": "9x", "to": "Aufgaben", "value": 9}, {"color": "rgb(0,254,0)", "from": "Computerprogramme", "label": "8.0%", "title": "4x", "to": "befasst", "value": 4}, {"color": "rgb(2,252,0)", "from": "sind", "label": "4.4%", "title": "16x", "to": "zu", "value": 16}, {"color": "rgb(3,251,0)", "from": "zu", "label": "2.22%", "title": "19x", "to": "lernen", "value": 19}, {"color": "rgb(0,254,0)", "from": "zu", "label": "0.35%", "title": "3x", "to": "argumentieren", "value": 3}, {"color": "rgb(0,254,0)", "from": "argumentieren", "label": "66.67%", "title": "2x", "to": "und", "value": 2}, {"color": "rgb(1,253,0)", "from": "Probleme", "label": "50.0%", "title": "9x", "to": "zu", "value": 9}, {"color": "rgb(0,254,0)", "from": "ein", "label": "0.44%", "title": "6x", "to": "vielversprechendes", "value": 6}, {"color": "rgb(0,254,0)", "from": "vielversprechendes", "label": "66.67%", "title": "4x", "to": "und", "value": 4}, {"color": "rgb(0,254,0)", "from": "und", "label": "0.53%", "title": "4x", "to": "sich", "value": 4}, {"color": "rgb(1,253,0)", "from": "Denkprozesse", "label": "39.29%", "title": "11x", "to": "auszuf\u00fchren", "value": 11}, {"color": "rgb(0,254,0)", "from": "auszuf\u00fchren", "label": "1.69%", "title": "5x", "to": "und", "value": 5}, {"color": "rgb(6,248,0)", "from": "von", "label": "6.43%", "title": "35x", "to": "Systemen", "value": 35}, {"color": "rgb(2,252,0)", "from": "das", "label": "1.31%", "title": "13x", "to": "die", "value": 13}, {"color": "rgb(2,252,0)", "from": "die", "label": "0.68%", "title": "15x", "to": "Entwicklung", "value": 15}, {"color": "rgb(1,253,0)", "from": "Computersystemen", "label": "14.86%", "title": "11x", "to": "umfasst", "value": 11}, {"color": "rgb(1,253,0)", "from": "umfasst", "label": "91.67%", "title": "11x", "to": "die", "value": 11}, {"color": "rgb(0,254,0)", "from": "vielversprechendes", "label": "33.33%", "title": "2x", "to": "Feld", "value": 2}, {"color": "rgb(1,253,0)", "from": "Computerprogramme", "label": "16.0%", "title": "8x", "to": "besch\u00e4ftigt", "value": 8}, {"color": "rgb(3,251,0)", "from": "h", "label": "7.86%", "title": "22x", "to": "von", "value": 22}, {"color": "rgb(0,254,0)", "from": "menschliche", "label": "0.5%", "title": "4x", "to": "Denkprozesse", "value": 4}, {"color": "rgb(0,254,0)", "from": "Denkprozesse", "label": "10.71%", "title": "3x", "to": "nachzubilden", "value": 3}, {"color": "rgb(0,254,0)", "from": "nachzubilden", "label": "100.0%", "title": "3x", "to": "und", "value": 3}, {"color": "rgb(3,251,0)", "from": "und", "label": "2.94%", "title": "22x", "to": "selbstst\u00e4ndig", "value": 22}, {"color": "rgb(1,253,0)", "from": "selbstst\u00e4ndig", "label": "40.91%", "title": "9x", "to": "Handlungen", "value": 9}, {"color": "rgb(5,250,0)", "from": "also", "label": "19.18%", "title": "28x", "to": "Systeme", "value": 28}, {"color": "rgb(0,255,0)", "from": "wahrnehmen", "label": "0.24%", "title": "1x", "to": "aus", "value": 1}, {"color": "rgb(0,255,0)", "from": "aus", "label": "100.0%", "title": "1x", "to": "ihr", "value": 1}, {"color": "rgb(0,255,0)", "from": "ihr", "label": "100.0%", "title": "1x", "to": "lernen", "value": 1}, {"color": "rgb(0,255,0)", "from": "und", "label": "0.13%", "title": "1x", "to": "eigenst\u00e4ndig", "value": 1}, {"color": "rgb(0,255,0)", "from": "eigenst\u00e4ndig", "label": "100.0%", "title": "1x", "to": "Probleme", "value": 1}, {"color": "rgb(0,255,0)", "from": "der", "label": "0.03%", "title": "1x", "to": "die", "value": 1}, {"color": "rgb(0,254,0)", "from": "Computersysteme", "label": "7.41%", "title": "2x", "to": "zum", "value": 2}, {"color": "rgb(0,254,0)", "from": "zum", "label": "100.0%", "title": "2x", "to": "Ziel", "value": 2}, {"color": "rgb(0,254,0)", "from": "Ziel", "label": "66.67%", "title": "2x", "to": "hat", "value": 2}, {"color": "rgb(0,254,0)", "from": "hat", "label": "20.0%", "title": "2x", "to": "die", "value": 2}, {"color": "rgb(0,254,0)", "from": "das", "label": "0.3%", "title": "3x", "to": "sind", "value": 3}, {"color": "rgb(0,254,0)", "from": "sind", "label": "0.82%", "title": "3x", "to": "Systeme", "value": 3}, {"color": "rgb(1,253,0)", "from": "das", "label": "0.7%", "title": "7x", "to": "hei\u00dft", "value": 7}, {"color": "rgb(0,254,0)", "from": "hei\u00dft", "label": "57.14%", "title": "4x", "to": "mit", "value": 4}, {"color": "rgb(3,251,0)", "from": "Computer", "label": "18.27%", "title": "19x", "to": "so", "value": 19}, {"color": "rgb(2,252,0)", "from": "so", "label": "89.47%", "title": "17x", "to": "zu", "value": 17}, {"color": "rgb(0,254,0)", "from": "zu", "label": "0.59%", "title": "5x", "to": "gestalten", "value": 5}, {"color": "rgb(0,254,0)", "from": "gestalten", "label": "100.0%", "title": "5x", "to": "dass", "value": 5}, {"color": "rgb(3,251,0)", "from": "dass", "label": "100.0%", "title": "18x", "to": "sie", "value": 18}, {"color": "rgb(3,251,0)", "from": "sie", "label": "91.3%", "title": "21x", "to": "Aufgaben", "value": 21}, {"color": "rgb(3,251,0)", "from": "von", "label": "3.86%", "title": "21x", "to": "Computern", "value": 21}, {"color": "rgb(3,251,0)", "from": "Computern", "label": "87.5%", "title": "21x", "to": "Aufgaben", "value": 21}, {"color": "rgb(0,254,0)", "from": "und", "label": "0.27%", "title": "2x", "to": "autonom", "value": 2}, {"color": "rgb(0,255,0)", "from": "autonom", "label": "25.0%", "title": "1x", "to": "Handlungen", "value": 1}, {"color": "rgb(2,252,0)", "from": "zu", "label": "1.52%", "title": "13x", "to": "denken", "value": 13}, {"color": "rgb(0,255,0)", "from": "l\u00f6sen", "label": "5.0%", "title": "1x", "to": "wie", "value": 1}, {"color": "rgb(1,253,0)", "from": "ergreifen", "label": "9.28%", "title": "9x", "to": "k\u00f6nnen", "value": 9}, {"color": "rgb(0,254,0)", "from": "versucht", "label": "50.0%", "title": "3x", "to": "Computer", "value": 3}, {"color": "rgb(1,253,0)", "from": "entwickeln", "label": "23.91%", "title": "11x", "to": "dass", "value": 11}, {"color": "rgb(1,253,0)", "from": "also", "label": "4.79%", "title": "7x", "to": "von", "value": 7}, {"color": "rgb(0,254,0)", "from": "entwickelnder", "label": "0.68%", "title": "2x", "to": "Zweig", "value": 2}, {"color": "rgb(2,252,0)", "from": "und", "label": "1.87%", "title": "14x", "to": "Computersysteme", "value": 14}, {"color": "rgb(1,253,0)", "from": "kognitive", "label": "30.56%", "title": "11x", "to": "F\u00e4higkeiten", "value": 11}, {"color": "rgb(2,252,0)", "from": "F\u00e4higkeiten", "label": "68.42%", "title": "13x", "to": "wie", "value": 13}, {"color": "rgb(0,254,0)", "from": "Entscheidungsfindung", "label": "12.2%", "title": "5x", "to": "besitzen", "value": 5}, {"color": "rgb(0,255,0)", "from": "Maschinen", "label": "0.26%", "title": "1x", "to": "umfasst", "value": 1}, {"color": "rgb(0,255,0)", "from": "umfasst", "label": "8.33%", "title": "1x", "to": "Aufgaben", "value": 1}, {"color": "rgb(2,252,0)", "from": "wie", "label": "17.14%", "title": "12x", "to": "z", "value": 12}, {"color": "rgb(2,252,0)", "from": "z", "label": "100.0%", "title": "12x", "to": "B", "value": 12}, {"color": "rgb(2,252,0)", "from": "B", "label": "100.0%", "title": "12x", "to": "Lernen", "value": 12}, {"color": "rgb(1,253,0)", "from": "und", "label": "1.47%", "title": "11x", "to": "Entscheidungen", "value": 11}, {"color": "rgb(1,253,0)", "from": "Entscheidungen", "label": "81.82%", "title": "9x", "to": "treffen", "value": 9}, {"color": "rgb(0,254,0)", "from": "intelligenten", "label": "1.79%", "title": "6x", "to": "Systemen", "value": 6}, {"color": "rgb(2,252,0)", "from": "menschen\u00e4hnliche", "label": "6.77%", "title": "13x", "to": "Intelligenz", "value": 13}, {"color": "rgb(2,252,0)", "from": "Intelligenz", "label": "1.49%", "title": "12x", "to": "zu", "value": 12}, {"color": "rgb(1,253,0)", "from": "zu", "label": "1.05%", "title": "9x", "to": "zeigen", "value": 9}, {"color": "rgb(0,254,0)", "from": "abzielt", "label": "2.26%", "title": "3x", "to": "intelligente", "value": 3}, {"color": "rgb(0,255,0)", "from": "intelligente", "label": "16.67%", "title": "1x", "to": "Maschinen", "value": 1}, {"color": "rgb(0,255,0)", "from": "zu", "label": "0.12%", "title": "1x", "to": "schaffen", "value": 1}, {"color": "rgb(0,255,0)", "from": "schaffen", "label": "100.0%", "title": "1x", "to": "die", "value": 1}, {"color": "rgb(0,254,0)", "from": "Denkprozesse", "label": "17.86%", "title": "5x", "to": "wie", "value": 5}, {"color": "rgb(0,254,0)", "from": "Computersysteme", "label": "11.11%", "title": "3x", "to": "besch\u00e4ftigt", "value": 3}, {"color": "rgb(1,253,0)", "from": "also", "label": "5.48%", "title": "8x", "to": "mit", "value": 8}, {"color": "rgb(0,254,0)", "from": "Gebiet", "label": "3.85%", "title": "2x", "to": "das", "value": 2}, {"color": "rgb(0,254,0)", "from": "sich", "label": "0.11%", "title": "2x", "to": "auf", "value": 2}, {"color": "rgb(0,254,0)", "from": "auf", "label": "66.67%", "title": "2x", "to": "die", "value": 2}, {"color": "rgb(0,254,0)", "from": "Computersystemen", "label": "2.7%", "title": "2x", "to": "konzentriert", "value": 2}, {"color": "rgb(0,254,0)", "from": "konzentriert", "label": "100.0%", "title": "2x", "to": "die", "value": 2}, {"color": "rgb(0,254,0)", "from": "menschen\u00e4hnliche", "label": "1.56%", "title": "3x", "to": "Intelligenzfunktionen", "value": 3}, {"color": "rgb(0,255,0)", "from": "Intelligenzfunktionen", "label": "33.33%", "title": "1x", "to": "auszuf\u00fchren", "value": 1}, {"color": "rgb(1,253,0)", "from": "menschen\u00e4hnliche", "label": "4.69%", "title": "9x", "to": "Intelligenzleistungen", "value": 9}, {"color": "rgb(0,254,0)", "from": "Intelligenzleistungen", "label": "45.45%", "title": "5x", "to": "zu", "value": 5}, {"color": "rgb(0,254,0)", "from": "zu", "label": "0.47%", "title": "4x", "to": "vollbringen", "value": 4}, {"color": "rgb(1,253,0)", "from": "selbstst\u00e4ndig", "label": "36.36%", "title": "8x", "to": "handeln", "value": 8}, {"color": "rgb(0,255,0)", "from": "um", "label": "0.24%", "title": "1x", "to": "vorgegebene", "value": 1}, {"color": "rgb(0,255,0)", "from": "vorgegebene", "label": "100.0%", "title": "1x", "to": "Ziele", "value": 1}, {"color": "rgb(1,253,0)", "from": "die", "label": "0.32%", "title": "7x", "to": "menschliche", "value": 7}, {"color": "rgb(0,255,0)", "from": "Intelligenz", "label": "0.12%", "title": "1x", "to": "imitieren", "value": 1}, {"color": "rgb(0,255,0)", "from": "imitieren", "label": "25.0%", "title": "1x", "to": "oder", "value": 1}, {"color": "rgb(0,255,0)", "from": "oder", "label": "20.0%", "title": "1x", "to": "nachahmen", "value": 1}, {"color": "rgb(0,254,0)", "from": "nachahmen", "label": "50.0%", "title": "2x", "to": "k\u00f6nnen", "value": 2}, {"color": "rgb(1,253,0)", "from": "Lernen", "label": "19.3%", "title": "11x", "to": "Probleml\u00f6sung", "value": 11}, {"color": "rgb(1,253,0)", "from": "Probleml\u00f6sung", "label": "100.0%", "title": "11x", "to": "und", "value": 11}, {"color": "rgb(0,254,0)", "from": "und", "label": "0.27%", "title": "2x", "to": "Computersystemen", "value": 2}, {"color": "rgb(0,255,0)", "from": "zeigen", "label": "11.11%", "title": "1x", "to": "Aufgaben", "value": 1}, {"color": "rgb(0,255,0)", "from": "also", "label": "0.68%", "title": "1x", "to": "Computersysteme", "value": 1}, {"color": "rgb(0,255,0)", "from": "Computersysteme", "label": "3.7%", "title": "1x", "to": "die", "value": 1}, {"color": "rgb(0,254,0)", "from": "und", "label": "0.8%", "title": "6x", "to": "zu", "value": 6}, {"color": "rgb(0,254,0)", "from": "zu", "label": "0.7%", "title": "6x", "to": "handeln", "value": 6}, {"color": "rgb(0,254,0)", "from": "handeln", "label": "17.24%", "title": "5x", "to": "wie", "value": 5}, {"color": "rgb(0,254,0)", "from": "und", "label": "0.4%", "title": "3x", "to": "der", "value": 3}, {"color": "rgb(1,253,0)", "from": "menschen\u00e4hnliche", "label": "3.65%", "title": "7x", "to": "F\u00e4higkeiten", "value": 7}, {"color": "rgb(0,254,0)", "from": "Entscheidungsfindung", "label": "7.32%", "title": "3x", "to": "aufweisen", "value": 3}, {"color": "rgb(1,253,0)", "from": "der", "label": "0.27%", "title": "8x", "to": "darauf", "value": 8}, {"color": "rgb(0,254,0)", "from": "menschliche", "label": "0.25%", "title": "2x", "to": "Intelligenzleistungen", "value": 2}, {"color": "rgb(0,254,0)", "from": "Intelligenzleistungen", "label": "27.27%", "title": "3x", "to": "wie", "value": 3}, {"color": "rgb(0,255,0)", "from": "Entscheidungsfindung", "label": "2.44%", "title": "1x", "to": "nachzubilden", "value": 1}, {"color": "rgb(1,253,0)", "from": "Entscheidungsfindung", "label": "19.51%", "title": "8x", "to": "ausf\u00fchren", "value": 8}, {"color": "rgb(0,254,0)", "from": "Softwaresysteme", "label": "18.75%", "title": "3x", "to": "besch\u00e4ftigt", "value": 3}, {"color": "rgb(0,254,0)", "from": "selbstst\u00e4ndig", "label": "18.18%", "title": "4x", "to": "Aktionen", "value": 4}, {"color": "rgb(0,254,0)", "from": "zu", "label": "0.35%", "title": "3x", "to": "simulieren", "value": 3}, {"color": "rgb(0,254,0)", "from": "menschliche", "label": "0.25%", "title": "2x", "to": "kognitive", "value": 2}, {"color": "rgb(0,254,0)", "from": "Entscheidungsfindung", "label": "7.32%", "title": "3x", "to": "simulieren", "value": 3}, {"color": "rgb(0,254,0)", "from": "simulieren", "label": "50.0%", "title": "2x", "to": "k\u00f6nnen", "value": 2}, {"color": "rgb(0,254,0)", "from": "zu", "label": "0.23%", "title": "2x", "to": "demonstrieren", "value": 2}, {"color": "rgb(0,254,0)", "from": "demonstrieren", "label": "100.0%", "title": "2x", "to": "indem", "value": 2}, {"color": "rgb(0,254,0)", "from": "indem", "label": "66.67%", "title": "4x", "to": "sie", "value": 4}, {"color": "rgb(0,254,0)", "from": "Aufgaben", "label": "0.66%", "title": "6x", "to": "wie", "value": 6}, {"color": "rgb(0,254,0)", "from": "handeln", "label": "20.69%", "title": "6x", "to": "um", "value": 6}, {"color": "rgb(0,254,0)", "from": "so", "label": "10.53%", "title": "2x", "to": "intelligent", "value": 2}, {"color": "rgb(0,255,0)", "from": "intelligent", "label": "50.0%", "title": "1x", "to": "wie", "value": 1}, {"color": "rgb(0,255,0)", "from": "Menschen", "label": "100.0%", "title": "1x", "to": "zu", "value": 1}, {"color": "rgb(0,254,0)", "from": "zu", "label": "0.23%", "title": "2x", "to": "machen", "value": 2}, {"color": "rgb(0,255,0)", "from": "machen", "label": "50.0%", "title": "1x", "to": "sodass", "value": 1}, {"color": "rgb(0,255,0)", "from": "sodass", "label": "100.0%", "title": "1x", "to": "sie", "value": 1}, {"color": "rgb(0,255,0)", "from": "sie", "label": "4.35%", "title": "1x", "to": "Probleme", "value": 1}, {"color": "rgb(0,255,0)", "from": "l\u00f6sen", "label": "5.0%", "title": "1x", "to": "lernen", "value": 1}, {"color": "rgb(0,255,0)", "from": "treffen", "label": "100.0%", "title": "1x", "to": "k\u00f6nnen", "value": 1}, {"color": "rgb(0,254,0)", "from": "abzielt", "label": "4.51%", "title": "6x", "to": "Computersysteme", "value": 6}, {"color": "rgb(0,254,0)", "from": "Computersysteme", "label": "22.22%", "title": "6x", "to": "zu", "value": 6}, {"color": "rgb(0,255,0)", "from": "F\u00e4higkeiten", "label": "5.26%", "title": "1x", "to": "auszuf\u00fchren", "value": 1}, {"color": "rgb(0,254,0)", "from": "Aufgaben", "label": "0.44%", "title": "4x", "to": "erf\u00fcllen", "value": 4}, {"color": "rgb(0,254,0)", "from": "erf\u00fcllen", "label": "18.18%", "title": "4x", "to": "k\u00f6nnen", "value": 4}, {"color": "rgb(0,254,0)", "from": "zeigen", "label": "44.44%", "title": "4x", "to": "wie", "value": 4}, {"color": "rgb(0,254,0)", "from": "sind", "label": "0.82%", "title": "3x", "to": "ihre", "value": 3}, {"color": "rgb(0,254,0)", "from": "Umgebung", "label": "0.83%", "title": "3x", "to": "wahrzunehmen", "value": 3}, {"color": "rgb(0,254,0)", "from": "wahrzunehmen", "label": "100.0%", "title": "3x", "to": "und", "value": 3}, {"color": "rgb(0,254,0)", "from": "Ma\u00dfnahmen", "label": "4.84%", "title": "3x", "to": "zu", "value": 3}, {"color": "rgb(0,254,0)", "from": "zu", "label": "0.35%", "title": "3x", "to": "ergreifen", "value": 3}, {"color": "rgb(0,254,0)", "from": "zeigen", "label": "22.22%", "title": "2x", "to": "indem", "value": 2}, {"color": "rgb(0,254,0)", "from": "ein", "label": "0.36%", "title": "5x", "to": "Teilgebiet", "value": 5}, {"color": "rgb(0,254,0)", "from": "Teilgebiet", "label": "100.0%", "title": "5x", "to": "der", "value": 5}, {"color": "rgb(0,255,0)", "from": "gef\u00e4chertes", "label": "4.55%", "title": "1x", "to": "Gebiet", "value": 1}, {"color": "rgb(0,254,0)", "from": "Intelligenzleistungen", "label": "27.27%", "title": "3x", "to": "erbringen", "value": 3}, {"color": "rgb(0,254,0)", "from": "erbringen", "label": "75.0%", "title": "3x", "to": "k\u00f6nnen", "value": 3}, {"color": "rgb(0,255,0)", "from": "dem", "label": "33.33%", "title": "1x", "to": "Erstellen", "value": 1}, {"color": "rgb(0,255,0)", "from": "Erstellen", "label": "100.0%", "title": "1x", "to": "von", "value": 1}, {"color": "rgb(0,254,0)", "from": "Denkprozesse", "label": "7.14%", "title": "2x", "to": "nachahmen", "value": 2}, {"color": "rgb(0,255,0)", "from": "Intelligenz", "label": "0.12%", "title": "1x", "to": "nachzubilden", "value": 1}, {"color": "rgb(0,254,0)", "from": "Entscheidungsfindung", "label": "4.88%", "title": "2x", "to": "zu", "value": 2}, {"color": "rgb(0,254,0)", "from": "zu", "label": "0.23%", "title": "2x", "to": "erbringen", "value": 2}, {"color": "rgb(0,255,0)", "from": "Entscheidungsfindung", "label": "2.44%", "title": "1x", "to": "zeigen", "value": 1}, {"color": "rgb(0,255,0)", "from": "dem", "label": "33.33%", "title": "1x", "to": "Erschaffen", "value": 1}, {"color": "rgb(0,255,0)", "from": "Erschaffen", "label": "100.0%", "title": "1x", "to": "von", "value": 1}, {"color": "rgb(0,254,0)", "from": "Denkprozesse", "label": "7.14%", "title": "2x", "to": "ausf\u00fchren", "value": 2}, {"color": "rgb(0,255,0)", "from": "k\u00f6nnen", "label": "0.22%", "title": "1x", "to": "besch\u00e4ftigt", "value": 1}, {"color": "rgb(0,255,0)", "from": "Maschinen", "label": "0.26%", "title": "1x", "to": "mit", "value": 1}, {"color": "rgb(0,255,0)", "from": "mit", "label": "0.08%", "title": "1x", "to": "menschen\u00e4hnlichen", "value": 1}, {"color": "rgb(0,255,0)", "from": "menschen\u00e4hnlichen", "label": "100.0%", "title": "1x", "to": "kognitiven", "value": 1}, {"color": "rgb(0,255,0)", "from": "kognitiven", "label": "100.0%", "title": "1x", "to": "F\u00e4higkeiten", "value": 1}, {"color": "rgb(0,255,0)", "from": "F\u00e4higkeiten", "label": "5.26%", "title": "1x", "to": "auszustatten", "value": 1}, {"color": "rgb(0,254,0)", "from": "intelligente", "label": "33.33%", "title": "2x", "to": "Computerprogramme", "value": 2}, {"color": "rgb(0,255,0)", "from": "zu", "label": "0.12%", "title": "1x", "to": "programmieren", "value": 1}, {"color": "rgb(0,255,0)", "from": "programmieren", "label": "100.0%", "title": "1x", "to": "dass", "value": 1}, {"color": "rgb(0,255,0)", "from": "hat", "label": "10.0%", "title": "1x", "to": "unsere", "value": 1}, {"color": "rgb(0,255,0)", "from": "unsere", "label": "100.0%", "title": "1x", "to": "Gesellschaft", "value": 1}, {"color": "rgb(0,255,0)", "from": "Gesellschaft", "label": "100.0%", "title": "1x", "to": "auf", "value": 1}, {"color": "rgb(0,255,0)", "from": "auf", "label": "33.33%", "title": "1x", "to": "vielf\u00e4ltige", "value": 1}, {"color": "rgb(0,255,0)", "from": "vielf\u00e4ltige", "label": "100.0%", "title": "1x", "to": "Weise", "value": 1}, {"color": "rgb(0,255,0)", "from": "Weise", "label": "100.0%", "title": "1x", "to": "zu", "value": 1}, {"color": "rgb(0,255,0)", "from": "zu", "label": "0.12%", "title": "1x", "to": "transformieren", "value": 1}, {"color": "rgb(0,254,0)", "from": "zu", "label": "0.35%", "title": "3x", "to": "\u00fcbernehmen", "value": 3}, {"color": "rgb(0,254,0)", "from": "\u00fcbernehmen", "label": "100.0%", "title": "3x", "to": "die", "value": 3}, {"color": "rgb(0,254,0)", "from": "um", "label": "1.41%", "title": "6x", "to": "Ziele", "value": 6}, {"color": "rgb(0,255,0)", "from": "F\u00e4higkeiten", "label": "5.26%", "title": "1x", "to": "aufweisen", "value": 1}, {"color": "rgb(0,255,0)", "from": "Intelligenz", "label": "0.12%", "title": "1x", "to": "nachahmen", "value": 1}, {"color": "rgb(0,254,0)", "from": "oder", "label": "60.0%", "title": "3x", "to": "\u00fcbertreffen", "value": 3}, {"color": "rgb(0,254,0)", "from": "\u00fcbertreffen", "label": "100.0%", "title": "3x", "to": "k\u00f6nnen", "value": 3}, {"color": "rgb(0,255,0)", "from": "die", "label": "0.05%", "title": "1x", "to": "wahrnehmen", "value": 1}, {"color": "rgb(0,254,0)", "from": "maschinen", "label": "15.38%", "title": "4x", "to": "besch\u00e4ftigt", "value": 4}, {"color": "rgb(0,254,0)", "from": "ein", "label": "0.15%", "title": "2x", "to": "multidisziplin\u00e4rer", "value": 2}, {"color": "rgb(0,254,0)", "from": "multidisziplin\u00e4rer", "label": "100.0%", "title": "2x", "to": "Bereich", "value": 2}, {"color": "rgb(0,254,0)", "from": "auszuf\u00fchren", "label": "0.68%", "title": "2x", "to": "um", "value": 2}, {"color": "rgb(0,255,0)", "from": "um", "label": "0.24%", "title": "1x", "to": "Aufgaben", "value": 1}, {"color": "rgb(0,254,0)", "from": "l\u00f6sen", "label": "15.0%", "title": "3x", "to": "und", "value": 3}, {"color": "rgb(0,254,0)", "from": "Entscheidungen", "label": "18.18%", "title": "2x", "to": "zu", "value": 2}, {"color": "rgb(0,254,0)", "from": "zu", "label": "0.23%", "title": "2x", "to": "treffen", "value": 2}, {"color": "rgb(0,254,0)", "from": "hei\u00dft", "label": "28.57%", "title": "2x", "to": "Systemen", "value": 2}, {"color": "rgb(0,255,0)", "from": "und", "label": "0.13%", "title": "1x", "to": "darauf", "value": 1}, {"color": "rgb(0,255,0)", "from": "darauf", "label": "0.75%", "title": "1x", "to": "reagieren", "value": 1}, {"color": "rgb(0,255,0)", "from": "reagieren", "label": "100.0%", "title": "1x", "to": "um", "value": 1}, {"color": "rgb(0,254,0)", "from": "F\u00e4higkeiten", "label": "15.79%", "title": "3x", "to": "besitzen", "value": 3}, {"color": "rgb(0,255,0)", "from": "heisst", "label": "16.67%", "title": "1x", "to": "mit", "value": 1}, {"color": "rgb(0,254,0)", "from": "Intelligenzfunktionen", "label": "66.67%", "title": "2x", "to": "wie", "value": 2}, {"color": "rgb(0,255,0)", "from": "Verhaltens", "label": "3.12%", "title": "1x", "to": "besch\u00e4ftigt", "value": 1}, {"color": "rgb(0,255,0)", "from": "zeigen", "label": "11.11%", "title": "1x", "to": "und", "value": 1}, {"color": "rgb(0,255,0)", "from": "erbringen", "label": "25.0%", "title": "1x", "to": "wie", "value": 1}, {"color": "rgb(0,255,0)", "from": "um", "label": "0.24%", "title": "1x", "to": "Probleme", "value": 1}, {"color": "rgb(0,255,0)", "from": "Entscheidungsfindung", "label": "2.44%", "title": "1x", "to": "demonstrieren", "value": 1}, {"color": "rgb(0,255,0)", "from": "besitzen", "label": "100.0%", "title": "1x", "to": "und", "value": 1}, {"color": "rgb(0,254,0)", "from": "Aufgaben", "label": "0.22%", "title": "2x", "to": "autonom", "value": 2}, {"color": "rgb(0,255,0)", "from": "autonom", "label": "25.0%", "title": "1x", "to": "l\u00f6sen", "value": 1}, {"color": "rgb(0,255,0)", "from": "Computerprogramme", "label": "2.0%", "title": "1x", "to": "zu", "value": 1}, {"color": "rgb(0,255,0)", "from": "Intelligenz", "label": "0.12%", "title": "1x", "to": "nachbilden", "value": 1}, {"color": "rgb(0,254,0)", "from": "nachbilden", "label": "100.0%", "title": "2x", "to": "oder", "value": 2}, {"color": "rgb(0,255,0)", "from": "simulieren", "label": "25.0%", "title": "1x", "to": "und", "value": 1}, {"color": "rgb(0,255,0)", "from": "autonom", "label": "25.0%", "title": "1x", "to": "zu", "value": 1}, {"color": "rgb(0,254,0)", "from": "kognitive", "label": "5.56%", "title": "2x", "to": "Aufgaben", "value": 2}, {"color": "rgb(0,255,0)", "from": "weitreichendes", "label": "25.0%", "title": "1x", "to": "Gebiet", "value": 1}, {"color": "rgb(0,254,0)", "from": "ver\u00e4ndern", "label": "100.0%", "title": "2x", "to": "indem", "value": 2}, {"color": "rgb(0,254,0)", "from": "indem", "label": "33.33%", "title": "2x", "to": "es", "value": 2}, {"color": "rgb(0,255,0)", "from": "es", "label": "50.0%", "title": "1x", "to": "Computern", "value": 1}, {"color": "rgb(0,255,0)", "from": "Computern", "label": "4.17%", "title": "1x", "to": "erm\u00f6glicht", "value": 1}, {"color": "rgb(0,255,0)", "from": "erm\u00f6glicht", "label": "100.0%", "title": "1x", "to": "Aufgaben", "value": 1}, {"color": "rgb(0,255,0)", "from": "es", "label": "50.0%", "title": "1x", "to": "Computer", "value": 1}, {"color": "rgb(0,255,0)", "from": "Computer", "label": "0.96%", "title": "1x", "to": "bef\u00e4higt", "value": 1}, {"color": "rgb(0,255,0)", "from": "bef\u00e4higt", "label": "100.0%", "title": "1x", "to": "Aufgaben", "value": 1}, {"color": "rgb(0,255,0)", "from": "Denkprozesse", "label": "3.57%", "title": "1x", "to": "nachbilden", "value": 1}, {"color": "rgb(0,255,0)", "from": "oder", "label": "20.0%", "title": "1x", "to": "ausf\u00fchren", "value": 1}, {"color": "rgb(0,255,0)", "from": "ein", "label": "0.07%", "title": "1x", "to": "vielversprechender", "value": 1}, {"color": "rgb(0,255,0)", "from": "vielversprechender", "label": "100.0%", "title": "1x", "to": "aber", "value": 1}, {"color": "rgb(0,255,0)", "from": "aber", "label": "100.0%", "title": "1x", "to": "auch", "value": 1}, {"color": "rgb(0,255,0)", "from": "auch", "label": "100.0%", "title": "1x", "to": "komplexer", "value": 1}, {"color": "rgb(0,255,0)", "from": "komplexer", "label": "100.0%", "title": "1x", "to": "Bereich", "value": 1}, {"color": "rgb(0,254,0)", "from": "intelligenter", "label": "0.24%", "title": "2x", "to": "Systeme", "value": 2}, {"color": "rgb(0,255,0)", "from": "wahrnehmen", "label": "0.24%", "title": "1x", "to": "daraus", "value": 1}, {"color": "rgb(0,255,0)", "from": "daraus", "label": "100.0%", "title": "1x", "to": "lernen", "value": 1}, {"color": "rgb(0,255,0)", "from": "selbstst\u00e4ndig", "label": "4.55%", "title": "1x", "to": "Probleme", "value": 1}, {"color": "rgb(0,255,0)", "from": "intelligent", "label": "50.0%", "title": "1x", "to": "zu", "value": 1}, {"color": "rgb(0,255,0)", "from": "machen", "label": "50.0%", "title": "1x", "to": "dass", "value": 1}, {"color": "rgb(0,255,0)", "from": "Intelligenz", "label": "0.12%", "title": "1x", "to": "zeigen", "value": 1}, {"color": "rgb(0,255,0)", "from": "zeigen", "label": "11.11%", "title": "1x", "to": "k\u00f6nnen", "value": 1}, {"color": "rgb(0,255,0)", "from": "hei\u00dft", "label": "14.29%", "title": "1x", "to": "von", "value": 1}, {"color": "rgb(0,255,0)", "from": "nachzuahmen", "label": "100.0%", "title": "1x", "to": "Aufgaben", "value": 1}, {"color": "rgb(0,255,0)", "from": "ausf\u00fchren", "label": "0.14%", "title": "1x", "to": "die", "value": 1}, {"color": "rgb(0,255,0)", "from": "sie", "label": "4.35%", "title": "1x", "to": "lernen", "value": 1}, {"color": "rgb(0,255,0)", "from": "lernen", "label": "2.27%", "title": "1x", "to": "Probleme", "value": 1}, {"color": "rgb(0,255,0)", "from": "und", "label": "0.13%", "title": "1x", "to": "systeme", "value": 1}, {"color": "rgb(0,255,0)", "from": "systeme", "label": "100.0%", "title": "1x", "to": "besch\u00e4ftigt", "value": 1}, {"color": "rgb(0,255,0)", "from": "wahrnehmen", "label": "0.24%", "title": "1x", "to": "lernen", "value": 1}, {"color": "rgb(0,255,0)", "from": "autonom", "label": "25.0%", "title": "1x", "to": "handeln", "value": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -80000,
+            "springConstant": 0.001,
+            "springLength": 250
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
