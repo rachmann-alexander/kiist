@@ -59,7 +59,7 @@ def visualisiere_baum(kanten, output_html="baum.html"):
         for k in (src, tgt):
             if k not in knoten_set:
                 if k == "Künstliche Intelligenz ist":
-                    net.add_node(k, label=k, title=k, font={"size": 66, "bold": True})
+                    net.add_node(k, label=k, title=k, font={"size": 66, "bold": True}, color="yellow")
                 else:
                     net.add_node(k, label=k, title=k, font={"size": 22})
                 knoten_set.add(k)
